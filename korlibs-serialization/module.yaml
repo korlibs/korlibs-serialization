@@ -8,6 +8,9 @@ aliases:
   - jvmAndAndroid: [jvm, android]
 
 dependencies:
+  - com.soywiz:korlibs-string:6.0.0
+  - com.soywiz:korlibs-math-core:6.0.0
+  - com.soywiz:korlibs-datastructure-core:6.0.0
+  - com.soywiz:korlibs-platform:6.0.0
 
 test-dependencies:
-
