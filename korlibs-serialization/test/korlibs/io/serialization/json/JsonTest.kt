@@ -46,4 +46,12 @@ class JsonTest {
 	fun decodeUnicode() {
 		assertEquals("aeb", Json.parse(""" "a\u0065b" """))
 	}
+
+	@kotlin.test.Test
+	fun stringify1(){
+		assertEquals(
+			"""{"str":"'","int":1,"bool":true}""",
+			Json.stringify(Json.parse("""{"str":"'","int":1,"bool":true}"""))
+		)
+	}
 }
