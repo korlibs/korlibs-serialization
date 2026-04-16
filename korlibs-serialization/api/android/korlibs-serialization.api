@@ -434,7 +434,7 @@ public final class korlibs/io/serialization/yaml/Yaml {
 
 public abstract interface class korlibs/io/serialization/yaml/Yaml$Token {
 	public abstract fun getStr ()Ljava/lang/String;
-	public abstract fun getUstr ()Ljava/lang/String;
+	public fun getUstr ()Ljava/lang/String;
 }
 
 public final class korlibs/io/serialization/yaml/Yaml$Token$DefaultImpls {
