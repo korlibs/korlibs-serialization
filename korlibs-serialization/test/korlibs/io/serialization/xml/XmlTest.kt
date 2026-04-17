@@ -156,4 +156,100 @@ class XmlTest {
         assertEquals("ns:child", xml2.allNodeChildren[0].name)
         assertEquals("child", xml2.allNodeChildren[1].name)
     }
+
+    @Test
+    fun testXmlContent() {
+        val xml = Xml("<root><child xmlns:ns=\"http://example.com/ns\" ns:attr=\"value\">Content</child></root>")
+        assertEquals("Content", xml.childText("child"))
+    }
+
+    @Test
+    fun testIsTextIsCommentIsNode() {
+        val textNode = Xml.Text("hello")
+        val commentNode = Xml.Comment("a comment")
+        val elementNode = Xml.Tag("div", emptyMap(), emptyList())
+
+        assertTrue(textNode.isText)
+        assertFalse(textNode.isComment)
+        assertFalse(textNode.isNode)
+
+        assertFalse(commentNode.isText)
+        assertTrue(commentNode.isComment)
+        assertFalse(commentNode.isNode)
+
+        assertFalse(elementNode.isText)
+        assertFalse(elementNode.isComment)
+        assertTrue(elementNode.isNode)
+    }
+
+    @Test
+    fun testIterableXmlExtensions() {
+        val xml = Xml("<root><item a=\"1\">TextA</item><item a=\"2\">TextB</item><sub><item a=\"3\">TextC</item></sub></root>")
+        val items: Iterable<Xml> = xml["item"]
+
+        // str - reads attribute from first element
+        assertEquals("1", items.str("a"))
+        assertEquals("default", items.str("missing", "default"))
+
+        // children
+        val subChildren: Iterable<Xml> = xml["sub"].children("item")
+        assertEquals(listOf("3"), subChildren.map { it.str("a") })
+
+        // allChildren
+        val allCh = xml["sub"].allChildren
+        assertEquals(1, allCh.count())
+
+        // allNodeChildren
+        val allNodeCh = xml["sub"].allNodeChildren
+        assertEquals(1, allNodeCh.count())
+
+        // firstText
+        assertEquals("TextA", items.firstText)
+
+        // text - concatenation
+        assertEquals("TextATextB", items.text)
+
+        // get operator
+        val subItems: Iterable<Xml> = xml["sub"]["item"]
+        assertEquals("TextC", subItems.text)
+    }
+
+    @Test
+    fun testSequenceXmlExtensions() {
+        val xml = Xml("<root><item a=\"1\">TextA</item><item a=\"2\">TextB</item><sub><item a=\"3\">TextC</item></sub></root>")
+        val items: Sequence<Xml> = xml["item"].asSequence()
+
+        // str
+        assertEquals("1", items.str("a"))
+        assertEquals("default", items.str("missing", "default"))
+
+        // children
+        val subChildren: Sequence<Xml> = xml["sub"].asSequence().children("item")
+        assertEquals(listOf("3"), subChildren.map { it.str("a") }.toList())
+
+        // allChildren
+        val allCh = xml["sub"].asSequence().allChildren
+        assertEquals(1, allCh.count())
+
+        // allNodeChildren
+        val allNodeCh = xml["sub"].asSequence().allNodeChildren
+        assertEquals(1, allNodeCh.count())
+
+        // firstText
+        assertEquals("TextA", items.firstText)
+
+        // text
+        assertEquals("TextATextB", items.text)
+
+        // get operator
+        val subItems: Sequence<Xml> = xml["sub"].asSequence()["item"]
+        assertEquals("TextC", subItems.text)
+    }
+
+    @Test
+    fun testToXml() {
+        val xml = "<root><child>Hello</child></root>".toXml()
+        assertEquals("root", xml.name)
+        assertEquals("Hello", xml.childText("child"))
+    }
 }
