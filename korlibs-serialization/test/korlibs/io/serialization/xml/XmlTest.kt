@@ -156,4 +156,10 @@ class XmlTest {
         assertEquals("ns:child", xml2.allNodeChildren[0].name)
         assertEquals("child", xml2.allNodeChildren[1].name)
     }
+
+    @Test
+    fun testXmlContent() {
+        val xml = Xml("<root><child xmlns:ns=\"http://example.com/ns\" ns:attr=\"value\">Content</child></root>")
+        assertEquals("Content", xml.childText("child"))
+    }
 }
